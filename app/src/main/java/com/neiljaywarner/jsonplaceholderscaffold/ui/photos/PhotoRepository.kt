@@ -21,37 +21,40 @@ class PhotoRepository {
     //TODO: pass this in via constructor injection
     private val webservice = ServiceGenerator.createDeferredService(WebServiceApi::class.java)
 
-    // Simple in-memory cache. Details omitted for brevity.
-    //private val photosCache: UserCache? = null
+    val isLoading = MutableLiveData<Boolean>()
 
-    // similar to Google's guide https://developer.android.com/jetpack/docs/guide
     fun getPhotos(albumId: Int): MutableLiveData<List<Photo>> {
-        /*
-        val cached = photosCache!!.get(albumId)
-        if (cached != null) {
-            return cached
-        }
-        */
+
         val data = MutableLiveData<List<Photo>>()
+
+        // TODO: Make sure exception bubbles up so we can have error dialogs
 
         launch(UI) {
 
-            //userCache!!.put(userId, data)
             try {
+                isLoading.postValue(true)
                 val result = webservice.getPhotosByAlbum(albumId)
 
                 val photos = result.await()
                 Log.d("NJW***","photo1 ${photos[0].title})")
                 data.value = photos
             } catch (httpException: HttpException) {
-                Log.e("NJW-MV***", "httpException ${httpException.code()}; ${httpException.message()}")
+                Log.e("NJW-***", "httpException ${httpException.code()}; ${httpException.message()}")
+                //TODO wrap exception
+                throw httpException
                 // do some appropriate error stuff.
             } catch (e: Exception) {
-                Log.e("NJW-MV***", "exception ${e.localizedMessage}")
+                Log.e("NJW-***", "exception ${e.localizedMessage}")
+                throw e
                 // do some appropriate error stuff.        }
+            } finally {
+                isLoading.postValue(false)
             }
         }
         return data
 
     }
+    // Note: re: in progress operations/error - can add another livedata that returns isLoading, isError
+    // or can wrap in network bundle
+    // see https://developer.android.com/jetpack/docs/guide#show-in-progress-operations
 }
