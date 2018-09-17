@@ -32,22 +32,7 @@ class PhotosFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
-        /*
-        var dead = false
-        if (activity == null) {
-            dead = true
-            return
-        }
-        activity?.let {
-            dead = it.isDestroyed || it.isFinishing
-        }
-        if (dead) {
-            return
-        }
-                val dialog = JPHSApplication.instance.indeterminateProgressDialog(message = "Please wait a bit…", title = "Fetching data")
 
-        */
         Log.d("NJW", "***creating fragment")
         showLoadingDialog(true)
         viewModel.getPhotos(2).observe(this, Observer { photos: List<Photo>? ->
@@ -56,6 +41,8 @@ class PhotosFragment : Fragment() {
                 // TODO: set adapter to horizontal recyclerview
             }
         })
+
+        // TODO: this seems pretty promising https://proandroiddev.com/oversimplified-network-call-using-retrofit-livedata-kotlin-coroutines-and-dsl-512d08eadc16
 
 
         viewModel.isLoading().observe(this, Observer { isLoading: Boolean? ->
