@@ -3,6 +3,7 @@ package com.neiljaywarner.jsonplaceholderscaffold
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import com.neiljaywarner.jsonplaceholderscaffold.di.myModule
 import com.neiljaywarner.jsonplaceholderscaffold.ui.photos.PhotoRepository
 import com.neiljaywarner.jsonplaceholderscaffold.ui.photos.PhotosViewModel
 import org.koin.android.ext.android.startKoin
@@ -16,10 +17,7 @@ class JPHSApplication : Application(), Application.ActivityLifecycleCallbacks {
 
     // Koin for SL/DI
     // Can separate into a few modules/lists, one for viewmodels, one for repos, etc
-    val myModule : Module = module {
-        viewModel { PhotosViewModel(get()) }
-        single { PhotoRepository() }
-    }
+
 
     override fun onCreate() {
         super.onCreate()

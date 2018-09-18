@@ -44,7 +44,8 @@ class PhotosFragment : Fragment() {
 
         // TODO: this seems pretty promising https://proandroiddev.com/oversimplified-network-call-using-retrofit-livedata-kotlin-coroutines-and-dsl-512d08eadc16
 
-
+        //another option like Google uses https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample/app/src/main/java/com/android/example/github/vo/Resource.kt
+        // resource wrapper class
         viewModel.isLoading().observe(this, Observer { isLoading: Boolean? ->
             showLoadingDialog(isLoading == true)
         })

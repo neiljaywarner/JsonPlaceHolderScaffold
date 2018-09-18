@@ -3,6 +3,7 @@ package com.neiljaywarner.jsonplaceholderscaffold.ui.photos
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.LiveData
 import android.util.Log
+import com.neiljaywarner.jsonplaceholderscaffold.db.PhotoDao
 import com.neiljaywarner.jsonplaceholderscaffold.model.Photo
 import com.neiljaywarner.jsonplaceholderscaffold.network.ServiceGenerator
 import com.neiljaywarner.jsonplaceholderscaffold.network.WebServiceApi
@@ -17,9 +18,8 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 
-class PhotoRepository {
+class PhotoRepository(val webServiceApi: WebServiceApi, val photosDao: PhotoDao) {
     //TODO: pass this in via constructor injection
-    private val webservice = ServiceGenerator.createDeferredService(WebServiceApi::class.java)
 
     val isLoading = MutableLiveData<Boolean>()
 
@@ -33,7 +33,7 @@ class PhotoRepository {
 
             try {
                 isLoading.postValue(true)
-                val result = webservice.getPhotosByAlbum(albumId)
+                val result = webServiceApi.getPhotosByAlbum(albumId)
 
                 val photos = result.await()
                 Log.d("NJW***","photo1 ${photos[0].title})")
