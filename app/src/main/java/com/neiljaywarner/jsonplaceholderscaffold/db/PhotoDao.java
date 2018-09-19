@@ -14,7 +14,11 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface PhotoDao {
     @Insert(onConflict = REPLACE)
-    void save(Photo photo);
+    int save(Photo photo);
+
+    @Insert(onConflict = REPLACE)
+    int saveAll(List<Photo> photos);
+
     @Query("SELECT * FROM Photo WHERE id = :albumId")
     LiveData<List<Photo>> load(int albumId);
 }

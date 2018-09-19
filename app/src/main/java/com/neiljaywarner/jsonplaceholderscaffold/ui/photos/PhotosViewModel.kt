@@ -7,17 +7,9 @@ import com.neiljaywarner.jsonplaceholderscaffold.model.Photo
 
 
 
-class PhotosViewModel(val repo: PhotoRepository) : ViewModel() {
-    private var photos: MutableLiveData<List<Photo>>? = null
+class PhotosViewModel(private val repo: PhotoRepository) : ViewModel() {
 
-    fun init(albumId: Int) {
-        // TODO: this was in Google's guide, but delete it if not needed
-        // thought it was related to rotation
-        photos?.run {
-            photos = repo.getPhotos(albumId)
-        }
-    }
-
+    // TODO: use viewmodel to handle rotation by keeping its livedata alive.
     fun getPhotos(albumId: Int): MutableLiveData<List<Photo>> {
         return repo.getPhotos(albumId)
     }

@@ -4,10 +4,12 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
 @Entity
-data class Photo(val albumId: Int = 0,
-                 @PrimaryKey
-                 val id: Int = 0,
-                 val title: String = "", val url: String = "", val thumbnailUrl: String = "")
+data class Photo(
+        @PrimaryKey
+        var id: Int = 0,var albumId: Int = 0,
+                 var title: String = "",
+                 var url: String = "",
+                 var thumbnailUrl: String = "")
 /*
 {
 albumId: 1,

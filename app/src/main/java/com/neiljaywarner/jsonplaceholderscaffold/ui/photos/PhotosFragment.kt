@@ -20,7 +20,7 @@ class PhotosFragment : Fragment() {
 
     companion object {
         fun newInstance() = PhotosFragment()
-        val TAG = PhotosFragment::class.java.simpleName
+        val TAG = PhotosFragment::class.java.simpleName + "NJW"
     }
 
     val viewModel : PhotosViewModel by viewModel()
@@ -36,6 +36,7 @@ class PhotosFragment : Fragment() {
         Log.d("NJW", "***creating fragment")
         showLoadingDialog(true)
         viewModel.getPhotos(2).observe(this, Observer { photos: List<Photo>? ->
+            Log.d(TAG, "in getphotos observer in photosfragment")
             photos?.let {
                 Log.d(TAG, "***back from observer: photo1 title=${it[0].title}")
                 // TODO: set adapter to horizontal recyclerview

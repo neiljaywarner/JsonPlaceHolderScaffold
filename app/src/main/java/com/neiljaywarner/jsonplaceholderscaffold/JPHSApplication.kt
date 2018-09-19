@@ -4,12 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.neiljaywarner.jsonplaceholderscaffold.di.myModule
-import com.neiljaywarner.jsonplaceholderscaffold.ui.photos.PhotoRepository
-import com.neiljaywarner.jsonplaceholderscaffold.ui.photos.PhotosViewModel
 import org.koin.android.ext.android.startKoin
-import org.koin.android.viewmodel.ext.koin.viewModel
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.module
 import java.lang.ref.WeakReference
 
 class JPHSApplication : Application(), Application.ActivityLifecycleCallbacks {

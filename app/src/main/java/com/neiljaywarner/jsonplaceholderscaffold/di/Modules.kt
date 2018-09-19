@@ -2,6 +2,7 @@ package com.neiljaywarner.jsonplaceholderscaffold.di
 
 import android.app.Application
 import android.arch.persistence.room.Room
+import android.util.Log
 import com.neiljaywarner.jsonplaceholderscaffold.db.MyDatabase
 import com.neiljaywarner.jsonplaceholderscaffold.db.PhotoDao
 import com.neiljaywarner.jsonplaceholderscaffold.network.ServiceGenerator
@@ -18,16 +19,18 @@ import org.koin.experimental.builder.create
 val myModule : Module = module {
     viewModel { PhotosViewModel(get()) }
     single<WebServiceApi> { ServiceGenerator.createDeferredService(WebServiceApi::class.java) }
-    single<MyDatabase> { getRoomDatabase(androidApplication())}
-    single<PhotoDao> { get<MyDatabase>().photoDao() }
+
+    // TODO Find better way to solve this problem then casting MyDatabase? to MyDatabase
+    single<MyDatabase> { getRoomDatabase(androidApplication()) as MyDatabase}
+    single<PhotoDao> {
+        Log.d("NJW", "*** getting photoDao with Koin")
+        get<MyDatabase>().photoDao()
+    }
     //single { PhotoRepository(get(), get()) }
     // below is the same as above, e.g. DI all parameters
     single { create<PhotoRepository>() }
 
 }
 
-fun getRoomDatabase(application: Application) =
-        Room.databaseBuilder(application, MyDatabase::class.java, "mydatabase.db")
-                .fallbackToDestructiveMigration()
-                .build()
+fun getRoomDatabase(application: Application) = MyDatabase.getInstance(application.applicationContext)
 
