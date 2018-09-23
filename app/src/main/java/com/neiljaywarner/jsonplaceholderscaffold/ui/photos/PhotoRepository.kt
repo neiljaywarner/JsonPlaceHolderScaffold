@@ -18,43 +18,54 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 
-class PhotoRepository(val webServiceApi: WebServiceApi, val photosDao: PhotoDao) {
+class PhotoRepository(private val webServiceApi: WebServiceApi, private val photosDao: PhotoDao) {
     //TODO: pass this in via constructor injection
+
+    // TODO: Also see https://proandroiddev.com/the-missing-google-sample-of-android-architecture-components-guide-c7d6e7306b8f
+    // or https://github.com/chrisbanes/tivi
+
 
     val isLoading = MutableLiveData<Boolean>()
 
-    fun getPhotos(albumId: Int): MutableLiveData<List<Photo>> {
+    fun getPhotos(albumId: Int): LiveData<List<Photo>> {
 
-        val data = MutableLiveData<List<Photo>>()
-
-        // TODO: Make sure exception bubbles up so we can have error dialogs
-
+        refreshPhotos(albumId)
         launch(UI) {
 
-            try {
-                isLoading.postValue(true)
-                val result = webServiceApi.getPhotosByAlbum(albumId)
 
-                val photos = result.await()
-                Log.d("NJW***","photo1 ${photos[0].title})")
-                data.value = photos
-            } catch (httpException: HttpException) {
-                Log.e("NJW-***", "httpException ${httpException.code()}; ${httpException.message()}")
-                //TODO wrap exception
-                throw httpException
-                // do some appropriate error stuff.
-            } catch (e: Exception) {
-                Log.e("NJW-***", "exception ${e.localizedMessage}")
-                throw e
-                // do some appropriate error stuff.        }
-            } finally {
-                isLoading.postValue(false)
-            }
         }
-        return data
+        return photosDao.getData()
 
+    }
+    // TOD: note    https://developer.android.com/jetpack/docs/guide#show-in-progress-operations
+    private fun refreshPhotos(albumId: Int) = launch(UI) {
+        val hasFreshData: Boolean = photosDao.getCountFreshRows(1, 22) > 0
+        //if (photosDao.hasFreshData(albumId, 10.millisAgo()))
+        try {
+            isLoading.postValue(true)
+            val result = webServiceApi.getPhotosByAlbum(albumId)
+
+            val photos = result.await()
+            Log.d("NJW***","photo1 ${photos[0].title})")
+            //photosDao.saveAll(photos)
+        } catch (httpException: HttpException) {
+            Log.e("NJW-***", "httpException ${httpException.code()}; ${httpException.message()}")
+            //TODO wrap exception
+            throw httpException
+        } catch (e: Exception) {
+            Log.e("NJW-***", "exception ${e.localizedMessage}")
+            throw e
+        } finally {
+            isLoading.postValue(false)
+        }
     }
     // Note: re: in progress operations/error - can add another livedata that returns isLoading, isError
     // or can wrap in network bundle
     // see https://developer.android.com/jetpack/docs/guide#show-in-progress-operations
 }
+
+fun Int.millisAgo() : Long {
+    System.currentTimeMillis() - this
+}
+
+

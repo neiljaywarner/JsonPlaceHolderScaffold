@@ -9,4 +9,5 @@ import com.neiljaywarner.jsonplaceholderscaffold.model.Photo
 abstract class MyDatabase : RoomDatabase() {
     abstract fun photoDao(): PhotoDao
 
+    //TODO: don't forget to look at https://medium.com/androiddevelopers/7-pro-tips-for-room-fbadea4bfbd1
 }
